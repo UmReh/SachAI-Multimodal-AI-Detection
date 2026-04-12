@@ -1,0 +1,178 @@
+/* 💥 Kill all unexpected spacing */
+* {
+  
+  
+  box-sizing: border-box;
+}
+h2{
+  color: black;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  background-color: #f4f4f4;
+  font-family: 'Segoe UI', sans-serif;
+  position: relative;
+}
+
+/* Page container */
+.page {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* 🔵 Navbar at top with full width */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #0d6efd;
+  color: white;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Centered title */
+.navbar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  flex-grow: 1;
+}
+
+/* Right aligned buttons */
+.navbar-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar-links button {
+  background: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  color: #0d6efd;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.navbar-links button:hover {
+  background: #e6e6e6;
+}
+
+/* 🔲 Content layout */
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 2rem;
+  justify-content: space-between;
+}
+
+/* 📤 Left upload panel */
+.left-panel {
+  flex: 1;
+  min-width: 320px;
+  max-width: 700px;
+}
+
+.upload-box {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icon {
+  width: 80px; /* increase from 50px to 80px */
+  height: 80px; /* optional: ensures it's a square */
+  margin-bottom: 1rem;
+}
+
+
+.preview-image {
+  max-width: 70%;
+  max-height: 400px;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* File input & button */
+input[type="file"] {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+button {
+  padding: 0.75rem 1rem;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 1rem;
+}
+
+button:hover {
+  background-color: #094db1;
+}
+
+/* Message */
+.message {
+  margin-top: 1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 📢 Right tagline panel */
+.right-panel {
+  flex: 2;
+  padding: 2rem;
+  max-width: 600px;
+}
+
+.right-panel h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.right-panel p {
+  font-size: 1.1rem;
+  color: #444;
+}
+
+.prediction {
+  color: #00b894;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+
+/* 📱 Responsive fix */
+@media screen and (max-width: 768px) {
+  .content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .navbar {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .navbar-title {
+    margin-bottom: 1rem;
+  }
+
+  .navbar-links {
+    justify-content: center;
+  }
+}
