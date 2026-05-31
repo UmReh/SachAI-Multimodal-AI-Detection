@@ -1,197 +1,264 @@
-# 🧠 Deepfake Detection System using Custom CNN
+# 🧠 SachAI – Multi-Modal AI Detection Platform
 
 ## 📌 Overview
 
-Deepfakes—AI-generated synthetic media—pose a serious threat to digital authenticity, misinformation control, and cybersecurity. This project presents a **deep learning–based system** capable of detecting manipulated images using a **custom Convolutional Neural Network (CNN)**.
+SachAI is a full-stack AI-powered misinformation detection platform designed to help users identify manipulated and misleading digital content.
 
-The system is implemented as a **full-stack web application**, allowing users to upload an image and receive real-time predictions indicating whether it is **Real or Deepfake**, along with a confidence score.
+The platform combines deepfake image detection, fake news verification, source credibility analysis, and explainable AI to provide a comprehensive authenticity assessment of online content.
+
+Built using React, Node.js, Flask, TensorFlow, and custom machine learning models, SachAI delivers real-time analysis through an intuitive web interface.
+
+---
+
+## 🚀 Key Features
+
+### 🎭 Deepfake Image Detection
+
+* Detects AI-generated and manipulated facial images
+* Custom CNN trained on 200,000+ real and fake images
+* Real-time image analysis
+* Confidence-based predictions
+
+### 📰 Fake News Verification
+
+* Verifies news claims using fact-checking services
+* Identifies potentially misleading information
+* Provides credibility insights and contextual analysis
+
+### 🔍 Source Verification
+
+* Evaluates source reliability
+* Assesses credibility indicators
+* Helps users identify trustworthy information sources
+
+### 🧠 Explainable AI (XAI)
+
+* Grad-CAM visualizations
+* Highlights image regions influencing model decisions
+* Improves transparency and interpretability
+
+### ⚡ Real-Time Analysis
+
+* Fast prediction pipeline
+* Interactive web interface
+* Immediate results with confidence scores
 
 ---
 
 ## 🎯 Problem Statement
 
-With the rapid advancement of AI, deepfake content has become highly realistic and difficult to detect manually. This creates serious risks in:
+The rapid growth of generative AI has significantly increased the spread of deepfakes and misinformation across digital platforms.
 
-* Journalism & media credibility
-* Political misinformation
-* Identity fraud & cybercrime
+These threats impact:
 
-This project aims to provide an **automated, scalable, and accurate solution** to detect such manipulated media.
+* Journalism and media credibility
+* Political discourse
+* Public trust
+* Cybersecurity
+* Identity protection
 
----
-
-## 🎯 Objectives
-
-* Develop a **custom CNN model** for deepfake image detection
-* Train the model on a **large real vs fake dataset (~200,000 images)**
-* Build a **full-stack application** for real-time prediction
-* Provide **visual insights (training graphs, metrics)**
+SachAI aims to provide an automated and scalable solution for detecting manipulated content and supporting informed decision-making.
 
 ---
 
 ## 🏗️ System Architecture
 
-```
-Frontend (React)
-        ↓
-Node.js Server (Middleware)
-        ↓
-Flask API (Python)
-        ↓
-Custom CNN Model (.h5)
+```text
+Frontend (React + Vite)
+          │
+          ▼
+Node.js API Layer
+          │
+          ▼
+Flask AI Services
+          │
+ ┌────────┼────────┐
+ ▼        ▼        ▼
+Deepfake  Fake     Explainable
+Model     News     AI Engine
+          Engine
 ```
 
 ---
 
-## ⚙️ Tech Stack
+## ⚙️ Technology Stack
 
 ### Frontend
 
 * React.js
-* Pico CSS
+* Vite
+* CSS
+* Responsive UI Design
 
 ### Backend
 
-* Node.js (API handling)
-* Flask (ML inference)
+* Node.js
+* Express.js
+* Flask
+* Python
 
-### Machine Learning
+### Artificial Intelligence
 
-* TensorFlow / Keras
-* Custom CNN Model
+* TensorFlow
+* Keras
+* Convolutional Neural Networks (CNN)
+* Grad-CAM
+
+### APIs & Verification
+
+* Google Fact Check API
+* External Verification Services
 
 ### Dataset
 
-* Kaggle: Deepfake and Real Images (~200K images)
+* Deepfake and Real Images Dataset
+* 200,000+ Images
 
 ---
 
-## ✨ Features
+## 📂 Project Structure
 
-* 📤 Upload image for analysis
-* ⚡ Real-time prediction (within ~2–3 seconds)
-* 🎯 Output: Real / Deepfake + Confidence Score
-* 📊 Training visualization (accuracy & loss graphs)
-* 🧠 Custom CNN model (not API-based)
-* 🌐 Full-stack integration
+```text
+SachAI-Multimodal-AI-Detection/
 
----
-
-### 🔹 Home Page
-<p align="center">
-  <img src="./screenshots/home.png" width="700"/>
-</p>
-
-
-### 🔹 Prediction Result
-<p align="center">
-  <img src="./screenshots/result.png" width="700"/>
-</p>
-
----
-
-## 🚀 How to Run Locally
-
-### 1️⃣ Clone the repository
-
-```bash
-git clone https://github.com/UmReh/deepfake-detector.git
-cd deepfake-detector
-```
-
----
-
-### 2️⃣ Start Backend (Node + Flask)
-
-```bash
-cd backend
-npm install
-npm run dev
-```
-
----
-
-### 3️⃣ Start Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
----
-
-### 4️⃣ Open in browser
-
-```
-http://localhost:5173/
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   └── assets/
+│
+├── backend/
+│   ├── app.py
+│   ├── custom_cnn_model.h5
+│   ├── fake_news_model.py
+│   ├── source_verifier.py
+│   ├── ai_explainer.py
+│   ├── predict_utils.py
+│   └── video_utils.py
+│
+├── screenshots/
+│
+└── README.md
 ```
 
 ---
 
 ## 📊 Model Performance
 
-* Accuracy: **~84%**
-* Dataset size: **~200,000 images**
-* Prediction latency: **2–3 seconds**
+### Deepfake Detection Model
+
+| Metric          | Value           |
+| --------------- | --------------- |
+| Model Type      | Custom CNN      |
+| Dataset Size    | 200,000+ Images |
+| Accuracy        | ~89%            |
+| Prediction Time | ~2–3 Seconds    |
 
 ---
 
-## ⚠️ Limitations
+## 📸 Screenshots
 
-* Supports **only image-based detection**
-* Performance depends on dataset diversity
-* No explainability (XAI) implemented
-* Not optimized for large-scale concurrent users
+### 🏠 Home Page
+
+![Home Page](./screenshots/home.png)
+
+### 🎭 Deepfake Detection
+
+![Deepfake Detection](./screenshots/result.png)
+
+### 📰 Fake News Verification
+
+(Add Screenshot)
+
+### 🧠 Explainable AI Results
+
+(Add Screenshot)
 
 ---
 
-## 🔮 Future Scope
+## 🚀 Installation
 
-* 🎥 Video deepfake detection
-* 🔊 Audio deepfake detection
-* 📈 Explainable AI (Grad-CAM, LIME)
-* ☁️ Cloud deployment (AWS/GCP)
-* 📱 Mobile app integration
+### 1. Clone Repository
 
----
-
-## 📂 Dataset Notice
-
-The dataset is not included due to size constraints.
-
-Download from:
-👉 https://www.kaggle.com/datasets/manjilkarki/deepfake-and-real-images
-
-Place it inside:
-
+```bash
+git clone https://github.com/UmReh/SachAI-Multimodal-AI-Detection.git
+cd SachAI-Multimodal-AI-Detection
 ```
-backend/Dataset/
+
+---
+
+### 2. Start Backend
+
+```bash
+cd backend
+
+pip install -r requirements.txt
+
+python app.py
 ```
 
 ---
 
-## 🧠 Key Achievements
+### 3. Start Frontend
 
-* Built a **custom CNN from scratch**
-* Developed a **full-stack AI application**
-* Achieved **real-time prediction pipeline**
-* Integrated ML model into production workflow
+```bash
+cd frontend
+
+npm install
+
+npm run dev
+```
+
+---
+
+### 4. Open Application
+
+```text
+http://localhost:5173
+```
+
+---
+
+## 🎯 Future Enhancements
+
+* 🎥 Video Deepfake Detection
+* 🔊 Audio Deepfake Detection
+* 🌐 Multi-language Fact Verification
+* ☁️ Cloud Deployment
+* 📱 Mobile Application
+* 🤖 Advanced Transformer-Based Models
+
+---
+
+## 🏆 Key Achievements
+
+* Built a complete AI-powered misinformation detection platform
+* Developed a custom CNN trained on 200,000+ images
+* Achieved approximately 89% deepfake detection accuracy
+* Integrated multiple AI services into a single application
+* Implemented explainable AI for model transparency
+* Created a scalable full-stack architecture
 
 ---
 
 ## 📚 References
 
-* TensorFlow & Keras Docs
-* Flask & Node.js Docs
+* TensorFlow Documentation
+* Keras Documentation
 * React Documentation
-* Kaggle Dataset
+* Flask Documentation
+* Node.js Documentation
+* Google Fact Check API
+* Kaggle Deepfake Dataset
 
 ---
 
 ## 👨‍💻 Author
 
 **Umer Rehman**
-B.Tech Computer Science
+
+B.Tech Computer Science Engineering
+Jamia Hamdard
 
 ---
+
+⭐ If you found this project interesting, consider starring the repository.
