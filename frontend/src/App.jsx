@@ -8,6 +8,8 @@ import { useEffect } from "react";
 
 
 function App() {
+  const API_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5001";
   const [file, setFile] = useState(null);
   const [result, setResult] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -60,16 +62,20 @@ function App() {
 
   let url = "";
 
-  if (file.type.startsWith("image")) {
-    formData.append("image", file);
-    url = "http://localhost:5001/predict";
-  } else if (file.type.startsWith("video")) {
-    formData.append("video", file);
-    url = "http://localhost:5001/predict-video";
-  } else {
-    alert("Unsupported file type");
-    return;
-  }
+
+  const API_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5001";
+
+    if (file.type.startsWith("image")) {
+      formData.append("image", file);
+      url = `${API_URL}/predict`;
+    } else if (file.type.startsWith("video")) {
+      formData.append("video", file);
+      url = `${API_URL}/predict-video`;
+    } else {
+      alert("Unsupported file type");
+      return;
+    }
 
   try {
     setLoading(true);
@@ -116,7 +122,7 @@ const handleDragLeave = () => {
     setNewsResult(null);
 
     try {
-      const response = await fetch("http://127.0.0.1:5001/predict-text", {
+      const response = await fetch(`${API_URL}/predict-text`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
