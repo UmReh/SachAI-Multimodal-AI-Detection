@@ -155,19 +155,6 @@ SachAI-Multimodal-AI-Detection/
 
 ---
 
-## 📸 Screenshots
-
-### 🏠 Home Page
-
-![Home Page](./screenshots/home.png)
-
-### 🎭 Deepfake Detection
-
-![Deepfake Detection](./screenshots/result.png)
-
-### 📰 Fake News Verification
-
-(Add Screenshot)
 
 ### 🧠 Explainable AI Results
 
