@@ -34,7 +34,7 @@ importlib-resources==6.4.0
 itsdangerous==2.2.0
 jax==0.4.13
 jinja2==3.1.6
-keras==2.13.1
+keras==2.15.0
 kiwisolver==1.4.5
 libclang==18.1.1
 Markdown==3.6
@@ -74,7 +74,7 @@ six==1.16.0
 sounddevice==0.4.6
 soupsieve==2.6
 sympy==1.13.3
-tensorboard==2.13.0
+tensorboard==2.15.0
 tensorboard-data-server==0.7.2
 tensorflow==2.15.0
 tensorflow-estimator==2.15.0
@@ -88,5 +88,5 @@ typing-extensions==4.12.2
 tzdata==2025.2
 urllib3==2.2.1
 werkzeug==3.0.2
-wrapt==1.16.0
+wrapt==1.14.1
 zipp==3.18.1
