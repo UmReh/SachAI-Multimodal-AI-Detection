@@ -22,7 +22,10 @@ function Upload() {
     formData.append("file", file);
 
     try {
-      const res = await axios.post("http://localhost:5000/upload", formData, {
+      const API_URL =
+      import.meta.env.VITE_API_URL || "http://localhost:5001";
+
+      const res = await axios.post(`${API_URL}/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setMessage(`✅ Uploaded: ${res.data.filePath}`);
