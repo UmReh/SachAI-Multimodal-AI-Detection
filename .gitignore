@@ -21,3 +21,5 @@ __pycache__/
 
 # OS
 .DS_Store
+# Deployment copy of the model (already tracked in backend/)
+hf-space/custom_cnn_model.h5
