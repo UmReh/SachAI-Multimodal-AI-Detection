@@ -6,7 +6,8 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from video_utils import extract_frames
 from predict_utils import predict_frame, aggregate_results
-from fake_news_model import predict_fake_news
+import threading
+from fake_news_model import predict_fake_news, warm_up
 from ai_explainer import generate_ai_explanation
 from source_verifier import verify_claim_with_google
 
@@ -22,15 +23,21 @@ model = load_model("custom_cnn_model.h5")
 def predict_text_internal(text):
     try:
         model_result = predict_fake_news(text)
+        model_ok = bool(
+            model_result and "prediction" in model_result and "confidence" in model_result
+        )
 
-        # Safety check
-        if not model_result or "prediction" not in model_result or "confidence" not in model_result:
+        fact_check = verify_claim_with_google(text)
+
+        # Need at least one signal: the classifier or a published fact-check.
+        if not model_ok and not fact_check.get("verified"):
             return jsonify({
                 "error": "Fake news model failed",
                 "details": model_result
             }), 500
 
-        fact_check = verify_claim_with_google(text)
+        if not model_ok:
+            model_result = {"prediction": "UNKNOWN", "confidence": 0}
 
         ai_result = generate_ai_explanation(
             model_result["prediction"],
@@ -170,7 +177,7 @@ def predict_video():
 
 @app.route('/predict-text', methods=['POST'])
 def predict_text():
-    data = request.get_json()
+    data = request.get_json(force=True, silent=True) or {}
     text = data.get("text", "")
 
     if not text:
@@ -179,6 +186,14 @@ def predict_text():
     return predict_text_internal(text)
 
 
+# Load the local fake-news model in the background so the first request is fast.
+threading.Thread(target=warm_up, daemon=True).start()
+
 if __name__ == "__main__":
-    app.run(port=5001)
+    # On a Hugging Face Space (SPACE_ID is set) listen publicly on 7860.
+    on_space = bool(os.environ.get("SPACE_ID"))
+    app.run(
+        host="0.0.0.0" if on_space else "127.0.0.1",
+        port=int(os.environ.get("PORT", 7860 if on_space else 5001)),
+    )
 
