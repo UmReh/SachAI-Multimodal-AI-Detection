@@ -102,7 +102,66 @@ function friendlyError(err, kind) {
   return "Something went wrong while analyzing. Please try again.";
 }
 
+/* ——— Cold-start handling ——————————————————————————————————— */
+/* The free backend sleeps when idle and takes ~1–2 minutes to wake up. While it
+   boots, requests fail in ways that look like network errors or gateway pages. */
+
+const WAKE_TIMEOUT_MS = 3 * 60 * 1000; // give up after 3 minutes
+const WAKE_RETRY_MS = 7000;
+const SLOW_HINT_MS = 12000; // a request hanging this long probably means it's asleep
+
+function wakeError(message) {
+  const e = new Error(message);
+  e.isWaking = true;
+  return e;
+}
+
+function looksAsleep(err) {
+  if (err?.isWaking) return true;
+  if (axios.isAxiosError?.(err)) {
+    if (!err.response) return true; // network / CORS failure while the host serves its own page
+    const s = err.response.status;
+    if (s === 502 || s === 503 || s === 504) return true;
+    return typeof err.response.data === "string" && /<html/i.test(err.response.data);
+  }
+  return err?.name === "TypeError"; // fetch() network failure
+}
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 /* ——— Sub-components ———————————————————————————————————————— */
+
+function WakingNotice({ seconds, onCancel }) {
+  const m = Math.floor(seconds / 60);
+  const s = String(seconds % 60).padStart(2, "0");
+  return (
+    <div className="waking" role="status" aria-live="polite">
+      <div className="waking-head">
+        <span className="waking-pulse" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+        </span>
+        <h4>Waking up the analysis server</h4>
+      </div>
+      <p>
+        Our free server naps when it's idle. It's starting up now, and your check will
+        run automatically as soon as it's ready. This usually takes 1–2 minutes.
+      </p>
+      <div className="waking-bar" aria-hidden="true">
+        <span />
+      </div>
+      <div className="waking-foot">
+        <span className="tabular-nums">
+          Elapsed {m}:{s}
+        </span>
+        <button className="btn-ghost" onClick={onCancel}>
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function MediaInput({
   file,
@@ -284,13 +343,19 @@ function App() {
   const [result, setResult] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [fileType, setFileType] = useState("");
-  const [loading, setLoading] = useState(false);
+  const preview = new URLSearchParams(window.location.search).get("preview");
+  const [loading, setLoading] = useState(preview === "waking");
+  const [waking, setWaking] = useState(preview === "waking");
+  const [wakeSeconds, setWakeSeconds] = useState(0);
+  const cancelRef = useRef(false);
   const [dragActive, setDragActive] = useState(false);
   const [scanDone, setScanDone] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeTab, setActiveTab] = useState("media");
-  const [newsText, setNewsText] = useState("");
+  const [activeTab, setActiveTab] = useState(preview === "waking" ? "news" : "media");
+  const [newsText, setNewsText] = useState(
+    preview === "waking" ? "Scientists confirm the Moon is made of cheese." : ""
+  );
   const [error, setError] = useState("");
   const [theme, setTheme] = useState(() => {
     const attr = document.documentElement.getAttribute("data-theme");
@@ -330,6 +395,55 @@ function App() {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
     };
   }, [previewUrl]);
+
+  // Quietly nudge a sleeping backend awake as soon as the page loads, so it is
+  // usually ready by the time someone submits something.
+  useEffect(() => {
+    fetch(`${API_URL}/`, { mode: "no-cors", cache: "no-store" }).catch(() => {});
+  }, []);
+
+  // Elapsed-time counter for the "waking up" notice.
+  useEffect(() => {
+    if (!waking) {
+      setWakeSeconds(0);
+      return undefined;
+    }
+    const started = Date.now();
+    const id = setInterval(() => setWakeSeconds(Math.floor((Date.now() - started) / 1000)), 1000);
+    return () => clearInterval(id);
+  }, [waking]);
+
+  /* Runs `attempt`; if the server looks asleep, shows the waking notice and keeps
+     retrying until it answers, the user cancels, or the timeout passes. */
+  const withWakeRetry = async (attempt, { slowHint = true } = {}) => {
+    cancelRef.current = false;
+    const started = Date.now();
+    for (;;) {
+      const slowTimer = slowHint ? setTimeout(() => setWaking(true), SLOW_HINT_MS) : null;
+      try {
+        const out = await attempt();
+        clearTimeout(slowTimer);
+        setWaking(false);
+        return out;
+      } catch (err) {
+        clearTimeout(slowTimer);
+        if (cancelRef.current) throw Object.assign(new Error("cancelled"), { cancelled: true });
+        if (!looksAsleep(err) || Date.now() - started > WAKE_TIMEOUT_MS) {
+          setWaking(false);
+          throw err;
+        }
+        setWaking(true);
+        await sleep(WAKE_RETRY_MS);
+        if (cancelRef.current) throw Object.assign(new Error("cancelled"), { cancelled: true });
+      }
+    }
+  };
+
+  const cancelWake = () => {
+    cancelRef.current = true;
+    setWaking(false);
+    setLoading(false);
+  };
 
   const selectFile = (selected) => {
     if (!selected) return;
@@ -373,9 +487,14 @@ function App() {
     setError("");
     setLoading(true);
     try {
-      const { data } = await axios.post(url, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const isVideo = file.type.startsWith("video");
+      const { data } = await withWakeRetry(
+        () =>
+          axios.post(url, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          }),
+        { slowHint: !isVideo }
+      );
 
       const flagged = String(data.prediction || "").toLowerCase().includes("fake") ||
         String(data.prediction || "").toLowerCase().includes("deepfake");
@@ -399,6 +518,7 @@ function App() {
         fileType,
       });
     } catch (err) {
+      if (err?.cancelled) return;
       console.error(err);
       setError(friendlyError(err, "media"));
     } finally {
@@ -415,26 +535,32 @@ function App() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/predict-text`, {
-        method: "POST",
-        // text/plain keeps this a "simple" CORS request (no preflight); the
-        // backend parses the body as JSON regardless of content type.
-        headers: { "Content-Type": "text/plain;charset=UTF-8" },
-        body: JSON.stringify({ text }),
+      const data = await withWakeRetry(async () => {
+        const response = await fetch(`${API_URL}/predict-text`, {
+          method: "POST",
+          // text/plain keeps this a "simple" CORS request (no preflight); the
+          // backend parses the body as JSON regardless of content type.
+          headers: { "Content-Type": "text/plain;charset=UTF-8" },
+          body: JSON.stringify({ text }),
+        });
+
+        if ([502, 503, 504].includes(response.status)) throw wakeError("Server is starting");
+
+        let body;
+        try {
+          body = await response.json();
+        } catch {
+          // A non-JSON reply means a host page (sleeping/starting), not our API.
+          throw wakeError("Server is starting");
+        }
+
+        if (!response.ok || !body.final_verdict) {
+          const err = new Error("Claim check failed");
+          err.serverMessage = body.error || "bad response";
+          throw err;
+        }
+        return body;
       });
-
-      let data = {};
-      try {
-        data = await response.json();
-      } catch {
-        /* non-JSON body — handled below */
-      }
-
-      if (!response.ok || !data.final_verdict) {
-        const e = new Error("Claim check failed");
-        e.serverMessage = data.error || "bad response";
-        throw e;
-      }
 
       const fv = String(data.final_verdict).toLowerCase();
       const flagged =
@@ -452,6 +578,7 @@ function App() {
         newsText: text,
       });
     } catch (err) {
+      if (err?.cancelled) return;
       console.error("Fake news detection error:", err);
       setError(friendlyError(err, "news"));
     } finally {
@@ -465,9 +592,11 @@ function App() {
   };
 
   const switchTab = (tab) => {
+    cancelRef.current = true;
     setActiveTab(tab);
     setResult(null);
     setError("");
+    setWaking(false);
     setLoading(false);
   };
 
@@ -479,6 +608,8 @@ function App() {
   };
 
   const resetAll = () => {
+    cancelRef.current = true;
+    setWaking(false);
     setResult(null);
     setError("");
     setFile(null);
@@ -626,7 +757,11 @@ function App() {
                     )}
                     <div className="tool-loading-scan" />
                   </div>
-                  <p className="tool-loading-label">Analyzing — this can take a few seconds…</p>
+                  {waking ? (
+                    <WakingNotice seconds={wakeSeconds} onCancel={cancelWake} />
+                  ) : (
+                    <p className="tool-loading-label">Analyzing — this can take a few seconds…</p>
+                  )}
                 </div>
               ) : result ? (
                 <VerdictResult result={result} onCheckAnother={resetAll} />
