@@ -1,85 +1,201 @@
-/* index.css or main.css (global reset) */
-* {
+/* ============================================================
+   SachAI — Design System Foundation
+   ============================================================ */
+
+/* ----------------------- 1. Color Tokens ------------------- */
+:root {
+  --color-bg:          #F5F7FB;
+  --color-surface:     #FFFFFF;
+  --color-ink:         #0E1629;
+  --color-slate:       #5B6578;
+  --color-muted:       #8A93A5;
+  --color-hairline:    #E3E7EF;
+
+  --color-navy-900:    #0A1226;
+  --color-navy-800:    #0F1B3A;
+  --color-navy-700:    #16264F;
+
+  --color-brand:       #2F5BEA;
+  --color-brand-dark:  #1E43C4;
+  --color-brand-soft:  #E9EFFE;
+  --color-accent:      #22D3EE;
+
+  --color-signal-green:#12805C;
+  --color-green-soft:  #E4F5EE;
+  --color-alert-rust:  #C2362B;
+  --color-rust-soft:   #FDEBE9;
+
+  --color-surface-2:   #FAFBFE;
+  --color-brand-line:  #C9D6F8;
+  --color-dz-border:   #CBD3E3;
+  --color-meter:       #DDE3EF;
+  --color-rust-line:   #F3C4BF;
+  --color-rust-text:   #7E221A;
+
+  --nav-bg:            rgba(255, 255, 255, 0.93);
+  --nav-bg-active:     rgba(255, 255, 255, 0.96);
+  --nav-border:        rgba(255, 255, 255, 0.55);
+  --nav-menu-bg:       rgba(255, 255, 255, 0.98);
+  --ws-bg:             rgba(255, 255, 255, 0.55);
+  --ws-border:         rgba(255, 255, 255, 0.7);
+  --cta-bg:            #0A1226;
+  --cta-fg:            #FFFFFF;
+
+  color-scheme: light;
+
+  /* legacy aliases */
+  --color-paper:       var(--color-surface);
+  --color-verify-blue: var(--color-brand);
+}
+
+/* ----------------------- 2. Typography --------------------- */
+:root {
+  --font-serif:  'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-sans:   'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-size-base:   16px;
+  --line-height-base: 1.6;
+}
+
+/* ----------------------- 3. Layout / Radius / Shadow -------- */
+:root {
+  --container-max:     1180px;
+  --container-pad-x:   24px;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  --shadow-sm: 0 1px 2px rgba(14, 22, 41, 0.06), 0 1px 3px rgba(14, 22, 41, 0.04);
+  --shadow-md: 0 8px 24px rgba(14, 22, 41, 0.08);
+  --shadow-lg: 0 24px 60px rgba(14, 22, 41, 0.14);
+}
+
+
+/* ----------------------- Dark theme ------------------------ */
+:root[data-theme="dark"] {
+  --color-bg:          #0A1120;
+  --color-surface:     #121B30;
+  --color-surface-2:   #0E1629;
+  --color-ink:         #E8ECF5;
+  --color-slate:       #9AA6BD;
+  --color-muted:       #6F7B93;
+  --color-hairline:    #232F4A;
+
+  --color-brand:       #5B86FF;
+  --color-brand-dark:  #7B9DFF;
+  --color-brand-soft:  rgba(91, 134, 255, 0.14);
+  --color-brand-line:  #34508F;
+  --color-dz-border:   #34415F;
+  --color-meter:       #232F4A;
+
+  --color-signal-green:#34D399;
+  --color-green-soft:  rgba(52, 211, 153, 0.14);
+  --color-alert-rust:  #F87171;
+  --color-rust-soft:   rgba(248, 113, 113, 0.13);
+  --color-rust-line:   rgba(248, 113, 113, 0.35);
+  --color-rust-text:   #FCA5A5;
+
+  --nav-bg:            rgba(14, 22, 41, 0.82);
+  --nav-bg-active:     rgba(14, 22, 41, 0.92);
+  --nav-border:        rgba(255, 255, 255, 0.1);
+  --nav-menu-bg:       rgba(14, 22, 41, 0.98);
+  --ws-bg:             rgba(18, 27, 48, 0.6);
+  --ws-border:         rgba(255, 255, 255, 0.08);
+  --cta-bg:            #FFFFFF;
+  --cta-fg:            #0A1226;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.55);
+
+  color-scheme: dark;
+}
+
+body,
+.tool-panel,
+.feature-card,
+.faq-item {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ----------------------- 4. Reset -------------------------- */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body, #root {
-  height: 100%;
-  width: 100%;
-  overflow-x: hidden;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f4f4;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+html {
+  font-size: var(--font-size-base);
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: clip;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-ink);
+  background-color: var(--color-bg);
+}
+
+#root {
+  width: 100%;
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
+a {
+  color: var(--color-brand);
+  text-decoration: none;
+}
+
+img, video {
+  max-width: 100%;
+  display: block;
+}
+
+button, input, textarea, select {
   font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  font-size: inherit;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+::selection {
+  background: var(--color-brand);
+  color: #fff;
+}
+
+/* ----------------------- 5. Container ---------------------- */
+.sachai-container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-pad-x);
+  padding-right: var(--container-pad-x);
+}
+
+/* ----------------------- 6. Utilities ---------------------- */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
