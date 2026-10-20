@@ -53,10 +53,10 @@ def predict_frame(frame):
     prediction = model.predict(img, verbose=0)[0][0]
 
     if prediction > 0.5:
-        return "FAKE", float(prediction)
-    else:
         return "REAL", float(1 - prediction)
-
+    else:
+        return "FAKE", float(prediction)
+    
 
 def aggregate_results(results):
     fake_scores = [s for l, s in results if l == "FAKE"]
