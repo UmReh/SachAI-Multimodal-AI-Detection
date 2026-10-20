@@ -1,17 +1,18 @@
-/* Illustrated studio portrait used in the hero "example scan".
-   Pure SVG (no external image), with a face-landmark overlay that
-   fades in once the scan sweep has finished. */
+/* Friendly illustrated portrait used in the hero "example scan".
+   Deliberately stylized (flat shapes, soft shading) rather than photoreal —
+   it stays on the appealing side of the uncanny valley. Pure SVG, with a
+   face-landmark overlay that fades in once the scan sweep has finished. */
 
 const JAW = [
-  [141, 112], [144, 135], [152, 160], [164, 188], [180, 203], [200, 210],
-  [220, 203], [236, 188], [248, 160], [256, 135], [259, 112],
+  [142, 116], [144, 134], [152, 152], [166, 168], [182, 179], [200, 182],
+  [218, 179], [234, 168], [248, 152], [256, 134], [258, 116],
 ];
-const BROW_L = [[161, 101], [176, 94], [193, 97]];
-const BROW_R = [[207, 97], [224, 94], [239, 101]];
-const EYE_L = [[163, 114], [177, 108.5], [191, 114], [177, 118.5]];
-const EYE_R = [[209, 114], [223, 108.5], [237, 114], [223, 118.5]];
-const NOSE = [[200, 116], [199, 140], [190, 162], [195, 167], [200, 168.5], [205, 167], [210, 162]];
-const MOUTH = [[178, 182], [189, 181], [200, 182.5], [211, 181], [222, 182], [211, 193], [200, 195], [189, 193]];
+const BROW_L = [[158, 101], [172, 95], [186, 99]];
+const BROW_R = [[214, 99], [228, 95], [242, 101]];
+const EYE_L = [[163, 121], [172, 113], [181, 121], [172, 128]];
+const EYE_R = [[219, 121], [228, 113], [237, 121], [228, 128]];
+const NOSE = [[200, 128], [200, 141], [194, 150], [200, 153], [206, 150]];
+const MOUTH = [[182, 152], [191, 150], [200, 151], [209, 150], [218, 152], [210, 163], [200, 166], [190, 163]];
 
 const ALL_POINTS = [...JAW, ...BROW_L, ...BROW_R, ...EYE_L, ...EYE_R, ...NOSE, ...MOUTH];
 const toPoints = (pts) => pts.map((p) => p.join(",")).join(" ");
@@ -30,200 +31,107 @@ export default function DemoFace({ scanned }) {
           <stop offset="55%" stopColor="#1F3470" />
           <stop offset="100%" stopColor="#0C1633" />
         </radialGradient>
-        <radialGradient id="df-skin" cx="44%" cy="38%" r="68%">
-          <stop offset="0%" stopColor="#F9DCC4" />
-          <stop offset="55%" stopColor="#EFC3A0" />
-          <stop offset="100%" stopColor="#D69F7A" />
-        </radialGradient>
-        {/* key light from the left: right side of the face falls into soft shade */}
-        <linearGradient id="df-light" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.1" />
-          <stop offset="45%" stopColor="#FFFFFF" stopOpacity="0" />
-          <stop offset="100%" stopColor="#7A4630" stopOpacity="0.26" />
-        </linearGradient>
-        <linearGradient id="df-neck" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#B87D5B" />
-          <stop offset="100%" stopColor="#DBA886" />
+        <linearGradient id="df-skin" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#F7CDAA" />
+          <stop offset="100%" stopColor="#F0BC95" />
         </linearGradient>
         <linearGradient id="df-hair" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#7A5640" />
-          <stop offset="50%" stopColor="#47301F" />
-          <stop offset="100%" stopColor="#24170F" />
+          <stop offset="0%" stopColor="#5A4036" />
+          <stop offset="100%" stopColor="#332420" />
         </linearGradient>
         <linearGradient id="df-blazer" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#2D3E69" />
-          <stop offset="100%" stopColor="#141E3C" />
+          <stop offset="100%" stopColor="#16213F" />
         </linearGradient>
-        <linearGradient id="df-teeth" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#FFFFFF" />
-          <stop offset="100%" stopColor="#E9E2D8" />
-        </linearGradient>
-        <radialGradient id="df-iris" cx="50%" cy="42%" r="58%">
-          <stop offset="0%" stopColor="#A9794A" />
-          <stop offset="60%" stopColor="#6E482A" />
-          <stop offset="100%" stopColor="#47301F" />
-        </radialGradient>
-        <filter id="df-blur-xs" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="1.1" />
+        <filter id="df-blur" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3" />
         </filter>
-        <filter id="df-blur-sm" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="2.4" />
-        </filter>
-        <filter id="df-blur-md" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="5" />
-        </filter>
-        <clipPath id="df-sclera-clip">
-          <path d="M163 114 C169 107 185 107 191 114 C185 118.8 169 118.8 163 114 Z" />
-        </clipPath>
-        <clipPath id="df-face-clip">
-          <path d="M141 112 C141 75 168 56 200 56 C232 56 259 75 259 112 C259 140 252 168 236 188 C225 202 213 210 200 210 C187 210 175 202 164 188 C148 168 141 140 141 112 Z" />
-        </clipPath>
         <clipPath id="df-neck-clip">
-          <path d="M171 188 L168 232 C168 247 232 247 232 232 L229 188 Z" />
+          <path d="M171 164 L169 208 C169 220 231 220 231 208 L229 164 Z" />
         </clipPath>
         <clipPath id="df-mouth-clip">
-          <path d="M180 182.5 C189 180 195 180.5 200 182.6 C205 180.5 211 180 220 182.5 C216 190 208 193.6 200 193.6 C192 193.6 184 190 180 182.5 Z" />
+          <path d="M183 151 C187 168 213 168 217 151 C209 154 191 154 183 151 Z" />
         </clipPath>
 
-        {/* one eye (viewer's left); mirrored for the right */}
+        {/* one eye, mirrored for the other side */}
         <g id="df-eye">
-          <ellipse cx="177" cy="105.5" rx="16" ry="6" fill="#B9775A" opacity="0.22" filter="url(#df-blur-sm)" />
-          <path d="M163 114 C169 107 185 107 191 114 C185 118.8 169 118.8 163 114 Z" fill="#F7F3ED" />
-          <g clipPath="url(#df-sclera-clip)">
-            <circle cx="177" cy="113.3" r="5.7" fill="url(#df-iris)" />
-            <circle cx="177" cy="113.3" r="2.3" fill="#171009" />
-            <circle cx="179.3" cy="111.3" r="1.5" fill="#fff" opacity="0.95" />
-            <circle cx="175" cy="115.4" r="0.8" fill="#fff" opacity="0.45" />
-            <path d="M163 109.5 C170 105.5 184 105.5 191 109.5 L191 112 L163 112 Z" fill="#5B3626" opacity="0.2" />
-          </g>
-          {/* lashes + lids */}
-          <path d="M162.4 114.4 C169 106.4 185 106.4 191.6 113.8" stroke="#3C261C" strokeOpacity="0.9" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-          <path d="M190.6 113 L194 110.6" stroke="#3C261C" strokeOpacity="0.7" strokeWidth="1" strokeLinecap="round" />
-          <path d="M187 110.4 L189.6 107.6" stroke="#3C261C" strokeOpacity="0.5" strokeWidth="0.9" strokeLinecap="round" />
-          <path d="M165 116.2 C171 119.6 183 119.6 189 116.2" stroke="#A26650" strokeOpacity="0.32" strokeWidth="0.9" fill="none" />
-          <path d="M164 108.6 C170 103 184 103 191 108.4" stroke="#A86A52" strokeOpacity="0.4" strokeWidth="1" fill="none" />
-          {/* smile crinkle under the eye */}
-          <path d="M165 121 C172 124 184 124 190 120.6" stroke="#B87A60" strokeOpacity="0.18" strokeWidth="1.4" fill="none" filter="url(#df-blur-xs)" />
+          <ellipse cx="172" cy="121" rx="7.2" ry="8" fill="#2A1C18" />
+          <circle cx="174.6" cy="118" r="2.7" fill="#fff" />
+          <circle cx="169.6" cy="123.6" r="1.3" fill="#fff" opacity="0.8" />
+          <path d="M163.5 117 C166 110.6 178 110.6 181 116.6" stroke="#2A1C18" strokeWidth="2.2" fill="none" strokeLinecap="round" />
         </g>
       </defs>
 
       {/* backdrop */}
       <rect width="400" height="300" fill="url(#df-bg)" />
-      <ellipse cx="200" cy="120" rx="150" ry="120" fill="#7596EA" opacity="0.22" filter="url(#df-blur-md)" />
-
-      {/* shoulders & blazer */}
-      <path d="M30 300 C40 258 100 232 168 226 L200 256 L232 226 C300 232 360 258 370 300 Z" fill="url(#df-blazer)" />
-      <path d="M40 290 C52 262 100 238 166 229" stroke="#8FB0FF" strokeOpacity="0.25" strokeWidth="1.6" fill="none" />
-      <path d="M172 228 L200 262 L228 228 L232 300 L168 300 Z" fill="#F0F3FA" />
-      <path d="M200 262 L200 300" stroke="#C9D1E0" strokeWidth="1" />
-      <path d="M168 226 L142 262 L156 300 L192 300 L200 262 Z" fill="#203159" />
-      <path d="M232 226 L258 262 L244 300 L208 300 L200 262 Z" fill="#1C2A4E" />
-      <path d="M168 226 L142 262 M232 226 L258 262" stroke="#0D1530" strokeWidth="1.2" opacity="0.5" />
+      <ellipse cx="200" cy="120" rx="150" ry="120" fill="#7596EA" opacity="0.22" filter="url(#df-blur)" />
 
       {/* neck */}
-      <path d="M171 188 L168 232 C168 247 232 247 232 232 L229 188 Z" fill="url(#df-neck)" />
-      <path d="M172 228 L200 262 L228 228 C216 238 184 238 172 228 Z" fill="#D29D7A" />
+      <path d="M171 164 L169 208 C169 220 231 220 231 208 L229 164 Z" fill="#E9B590" />
       <g clipPath="url(#df-neck-clip)">
-        <ellipse cx="204" cy="212" rx="30" ry="11" fill="#8A5238" opacity="0.34" filter="url(#df-blur-sm)" />
+        <ellipse cx="200" cy="184" rx="32" ry="12" fill="#B97C58" opacity="0.38" filter="url(#df-blur)" />
       </g>
 
-      {/* back hair */}
-      <path d="M134 126 C124 62 162 31 206 31 C254 31 278 66 267 128 C266 140 262 150 256 156 L144 156 C138 150 134 140 134 126 Z" fill="url(#df-hair)" />
+      {/* shoulders & blazer */}
+      <path d="M28 300 C40 240 102 208 164 200 L200 230 L236 200 C298 208 360 240 372 300 Z" fill="url(#df-blazer)" />
+      <path d="M42 290 C58 244 106 218 160 208" stroke="#8FB0FF" strokeOpacity="0.22" strokeWidth="1.6" fill="none" />
+      <path d="M170 203 L200 234 L230 203 L234 300 L166 300 Z" fill="#F2F5FB" />
+      <path d="M164 200 L138 238 L154 300 L192 300 L200 234 Z" fill="#22335E" />
+      <path d="M236 200 L262 238 L246 300 L208 300 L200 234 Z" fill="#22335E" />
+
+      <path d="M170 203 L200 234 L230 203 C216 211 184 211 170 203 Z" fill="#E2A982" />
 
       {/* ears */}
-      <ellipse cx="140" cy="134" rx="9" ry="16" fill="#E3AF8C" />
-      <ellipse cx="260" cy="134" rx="9" ry="16" fill="#D6A07D" />
-      <path d="M138 127 C141.5 132 141.5 139 138 145" stroke="#B3735A" strokeOpacity="0.4" strokeWidth="1.2" fill="none" />
-      <path d="M262 127 C258.5 132 258.5 139 262 145" stroke="#B3735A" strokeOpacity="0.4" strokeWidth="1.2" fill="none" />
+      <circle cx="142" cy="124" r="10" fill="#F0BC95" />
+      <circle cx="258" cy="124" r="10" fill="#F0BC95" />
+      <circle cx="142" cy="125" r="4.5" fill="#E3A07A" opacity="0.7" />
+      <circle cx="258" cy="125" r="4.5" fill="#E3A07A" opacity="0.7" />
 
-      {/* face */}
+      {/* face — rounded, friendly proportions */}
       <path
-        d="M141 112 C141 75 168 56 200 56 C232 56 259 75 259 112 C259 140 252 168 236 188 C225 202 213 210 200 210 C187 210 175 202 164 188 C148 168 141 140 141 112 Z"
+        d="M142 116 C142 78 168 58 200 58 C232 58 258 78 258 116 C258 150 234 182 200 182 C166 182 142 150 142 116 Z"
         fill="url(#df-skin)"
       />
 
-      <g clipPath="url(#df-face-clip)">
-        {/* directional light / shade */}
-        <rect x="140" y="50" width="120" height="165" fill="url(#df-light)" />
-        {/* forehead + cheekbone highlights */}
-        <ellipse cx="192" cy="78" rx="36" ry="14" fill="#FFF4E8" opacity="0.34" filter="url(#df-blur-sm)" />
-        <ellipse cx="166" cy="143" rx="14" ry="9" fill="#FFF1E2" opacity="0.28" filter="url(#df-blur-sm)" />
-        <ellipse cx="238" cy="143" rx="12" ry="8" fill="#FFF1E2" opacity="0.16" filter="url(#df-blur-sm)" />
-        {/* warm rosy cheeks (lifted by the smile) */}
-        <ellipse cx="160" cy="150" rx="16" ry="10" fill="#E8867B" opacity="0.2" filter="url(#df-blur-sm)" />
-        <ellipse cx="241" cy="150" rx="16" ry="10" fill="#E8867B" opacity="0.2" filter="url(#df-blur-sm)" />
-        {/* jaw falloff */}
-        <path d="M143 124 C146 158 160 190 186 206" stroke="#9A5E44" strokeOpacity="0.2" strokeWidth="8" fill="none" filter="url(#df-blur-sm)" />
-        <path d="M257 124 C254 158 240 190 214 206" stroke="#9A5E44" strokeOpacity="0.3" strokeWidth="9" fill="none" filter="url(#df-blur-sm)" />
-        <ellipse cx="200" cy="209" rx="22" ry="5" fill="#9A5E44" opacity="0.22" filter="url(#df-blur-sm)" />
-        {/* chin highlight + soft shadow under lower lip */}
-        <ellipse cx="199" cy="203" rx="9" ry="4" fill="#FFF1E2" opacity="0.22" filter="url(#df-blur-xs)" />
-        <ellipse cx="200" cy="199" rx="12" ry="3.4" fill="#9A5E44" opacity="0.16" filter="url(#df-blur-xs)" />
-      </g>
+      {/* soft cheeks */}
+      <ellipse cx="159" cy="146" rx="13" ry="8.5" fill="#F28B82" opacity="0.38" filter="url(#df-blur)" />
+      <ellipse cx="241" cy="146" rx="13" ry="8.5" fill="#F28B82" opacity="0.38" filter="url(#df-blur)" />
 
-      {/* front hair — side-swept with natural strands */}
+      {/* hair */}
       <path
-        d="M134 124 C123 66 156 37 206 37 C256 37 281 68 266 124 C263 103 255 88 242 78 C226 66 198 70 176 84 C158 93 144 106 140 124 Z"
+        d="M137 118 C128 62 162 36 202 36 C246 36 274 64 263 118 C259 96 248 82 234 77 C214 90 178 90 158 78 C147 87 140 100 137 118 Z"
         fill="url(#df-hair)"
       />
-      <path d="M150 90 C146 74 160 54 188 46" stroke="#A98467" strokeOpacity="0.4" strokeWidth="2.4" fill="none" strokeLinecap="round" filter="url(#df-blur-xs)" />
-      <path d="M168 64 C186 51 218 49 242 64" stroke="#9A7658" strokeOpacity="0.5" strokeWidth="2" fill="none" strokeLinecap="round" />
-      <path d="M156 80 C176 63 202 57 228 62" stroke="#876548" strokeOpacity="0.4" strokeWidth="1.3" fill="none" strokeLinecap="round" />
-      <path d="M206 43 C232 46 252 59 260 84" stroke="#876548" strokeOpacity="0.38" strokeWidth="1.3" fill="none" strokeLinecap="round" />
-      <path d="M180 56 C196 48 220 47 236 54" stroke="#B28F70" strokeOpacity="0.3" strokeWidth="1" fill="none" strokeLinecap="round" />
-      {/* a few loose strands across the hairline */}
-      <path d="M160 92 C157 98 158 104 161 108" stroke="#47301F" strokeOpacity="0.4" strokeWidth="1.1" fill="none" strokeLinecap="round" />
+      <path d="M166 58 C184 46 216 44 240 58" stroke="#8A6A5A" strokeOpacity="0.55" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <path d="M176 70 C192 62 214 62 230 68" stroke="#7A5C4E" strokeOpacity="0.35" strokeWidth="2" fill="none" strokeLinecap="round" />
 
-      {/* brows — arched and tapered */}
-      <path d="M160.5 102 C167 92.5 185 90 194 97.5 C185 94.6 169 96.5 160.5 102 Z" fill="#40291F" opacity="0.92" />
-      <path d="M206 97.5 C215 90 233 92.5 239.5 102 C231 96.5 215 94.6 206 97.5 Z" fill="#40291F" opacity="0.92" />
+      {/* brows */}
+      <path d="M158 101 C165 94 178 93 187 99" stroke="#3B2A24" strokeWidth="3.6" fill="none" strokeLinecap="round" />
+      <path d="M213 99 C222 93 235 94 242 101" stroke="#3B2A24" strokeWidth="3.6" fill="none" strokeLinecap="round" />
 
       {/* eyes */}
       <use href="#df-eye" />
       <use href="#df-eye" transform="translate(400,0) scale(-1,1)" />
 
-      {/* nose — narrow bridge, defined tip */}
-      <path d="M192.5 120 C190.8 136 189.6 149 189 158" stroke="#A56A4B" strokeOpacity="0.26" strokeWidth="3.2" fill="none" strokeLinecap="round" filter="url(#df-blur-sm)" />
-      <path d="M204.5 122 C205.4 136 207 148 209.6 158" stroke="#8A5238" strokeOpacity="0.14" strokeWidth="2.6" fill="none" strokeLinecap="round" filter="url(#df-blur-sm)" />
-      <path d="M199 124 C198.6 137 198 149 197.4 157" stroke="#FFF3E4" strokeOpacity="0.4" strokeWidth="1.8" fill="none" strokeLinecap="round" filter="url(#df-blur-xs)" />
-      <ellipse cx="199.6" cy="160.6" rx="4.2" ry="3.4" fill="#FFF0DC" opacity="0.5" filter="url(#df-blur-xs)" />
-      {/* nostril wings + base */}
-      <path d="M190 160.5 C185.5 163 186.5 168 192.5 168" stroke="#8E5640" strokeOpacity="0.5" strokeWidth="1.2" fill="none" strokeLinecap="round" />
-      <path d="M210 160.5 C214.5 163 213.5 168 207.5 168" stroke="#8E5640" strokeOpacity="0.5" strokeWidth="1.2" fill="none" strokeLinecap="round" />
-      <path d="M192.5 168 C195.5 170.6 197.6 170.4 200 169.4 C202.4 170.4 204.5 170.6 207.5 168" stroke="#8E5640" strokeOpacity="0.42" strokeWidth="1.3" fill="none" strokeLinecap="round" />
-      <ellipse cx="195.3" cy="167" rx="2.3" ry="1.2" fill="#4D281C" opacity="0.5" transform="rotate(-14 195.3 167)" />
-      <ellipse cx="204.7" cy="167" rx="2.3" ry="1.2" fill="#4D281C" opacity="0.5" transform="rotate(14 204.7 167)" />
-      {/* soft shadow cast under the nose tip */}
-      <ellipse cx="201" cy="172.5" rx="8" ry="2.2" fill="#8A5238" opacity="0.2" filter="url(#df-blur-xs)" />
+      {/* nose — a simple, soft shape */}
+      <path d="M197 142 C195 147 195 151 199 152 C202 153 205 151 205 148" stroke="#D9966F" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <ellipse cx="201" cy="141" rx="3" ry="4.5" fill="#FFE2C8" opacity="0.45" filter="url(#df-blur)" />
 
-      {/* smile lines (nasolabial folds) */}
-      <path d="M187 164 C180 170 177 177 178 183" stroke="#A8654C" strokeOpacity="0.28" strokeWidth="1.3" fill="none" strokeLinecap="round" filter="url(#df-blur-xs)" />
-      <path d="M213 164 C220 170 223 177 222 183" stroke="#A8654C" strokeOpacity="0.28" strokeWidth="1.3" fill="none" strokeLinecap="round" filter="url(#df-blur-xs)" />
-
-      {/* mouth — open, friendly smile */}
-      <path d="M197 175 L197.4 180 M203 175 L202.6 180" stroke="#B07556" strokeOpacity="0.22" strokeWidth="1.2" />
+      {/* open smile */}
+      <path d="M183 151 C187 168 213 168 217 151 C209 154 191 154 183 151 Z" fill="#8E2F3A" />
       <g clipPath="url(#df-mouth-clip)">
-        <rect x="176" y="178" width="48" height="18" fill="#5B1F22" />
-        {/* teeth */}
-        <path d="M183 183 C192 181.4 208 181.4 217 183 C213 189.4 207 191 200 191 C193 191 187 189.4 183 183 Z" fill="url(#df-teeth)" />
-        <path d="M200 182 L200 190.5" stroke="#D8D0C4" strokeOpacity="0.7" strokeWidth="0.7" />
-        <path d="M191.5 182.2 L192.2 189.6 M208.5 182.2 L207.8 189.6" stroke="#D8D0C4" strokeOpacity="0.45" strokeWidth="0.6" />
-        <ellipse cx="200" cy="190.5" rx="9" ry="3" fill="#C26F68" opacity="0.8" />
+        <path d="M180 150 L220 150 L220 158 C212 160 206 160 200 160 C194 160 188 160 180 158 Z" fill="#FFFFFF" />
+        <ellipse cx="200" cy="168" rx="11" ry="6" fill="#E26A74" />
       </g>
-      {/* upper lip */}
-      <path d="M178 181.6 C186 179 194 179.4 200 181.8 C206 179.4 214 179 222 181.6 C216 183 207 182.4 200 182.8 C193 182.4 184 183 178 181.6 Z" fill="#B95F57" />
-      {/* lower lip */}
-      <path d="M181 184 C187 192.6 194 194.8 200 194.8 C206 194.8 213 192.6 219 184 C213 191 206 192.6 200 192.6 C194 192.6 187 191 181 184 Z" fill="#D3827A" />
-      <ellipse cx="200" cy="193.6" rx="6.4" ry="1.2" fill="#FFE4DA" opacity="0.5" />
-      {/* mouth corners */}
-      <path d="M178 181.6 C176.6 180.6 176.2 179.4 176.8 178.4" stroke="#A8654C" strokeOpacity="0.45" strokeWidth="1.1" fill="none" strokeLinecap="round" />
-      <path d="M222 181.6 C223.4 180.6 223.8 179.4 223.2 178.4" stroke="#A8654C" strokeOpacity="0.45" strokeWidth="1.1" fill="none" strokeLinecap="round" />
+      <path d="M183 151 C187 168 213 168 217 151 C209 154 191 154 183 151 Z" fill="none" stroke="#B5584F" strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="M181 148 C178.6 149.6 178.4 153 180 155" stroke="#D9966F" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+      <path d="M219 148 C221.4 149.6 221.6 153 220 155" stroke="#D9966F" strokeWidth="1.6" fill="none" strokeLinecap="round" />
 
       {/* analysis overlay */}
       <g className={`demo-landmarks ${scanned ? "demo-landmarks--on" : ""}`}>
         <path
           className="demo-box"
-          d="M134 74 V50 H158 M242 50 H266 V74 M266 190 V216 H242 M158 216 H134 V190"
+          d="M132 78 V52 H156 M244 52 H268 V78 M268 160 V188 H244 M156 188 H132 V160"
           fill="none"
           stroke="#22D3EE"
           strokeWidth="1.8"
@@ -251,9 +159,9 @@ export default function DemoFace({ scanned }) {
           />
         ))}
         <g className="demo-tag">
-          <rect x="268" y="52" width="74" height="16" rx="8" fill="#0A1226" fillOpacity="0.8" stroke="#22D3EE" strokeOpacity="0.7" strokeWidth="0.8" />
-          <circle cx="278" cy="60" r="2.4" fill="#22D3EE" />
-          <text x="285" y="63.3" fontSize="8" fontWeight="600" fill="#E6FBFF" fontFamily="Inter, system-ui, sans-serif" letterSpacing="0.4">
+          <rect x="272" y="52" width="74" height="16" rx="8" fill="#0A1226" fillOpacity="0.8" stroke="#22D3EE" strokeOpacity="0.7" strokeWidth="0.8" />
+          <circle cx="282" cy="60" r="2.4" fill="#22D3EE" />
+          <text x="289" y="63.3" fontSize="8" fontWeight="600" fill="#E6FBFF" fontFamily="Inter, system-ui, sans-serif" letterSpacing="0.4">
             FACE · 98%
           </text>
         </g>
